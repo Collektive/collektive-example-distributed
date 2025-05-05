@@ -1,30 +1,36 @@
 [versions]
-kotlin = "2.1.20"
-alchemist = "42.1.0"
 collektive = "24.0.4"
+kotlin = "2.1.20"
+kotlin-logging = "7.0.7"
+hivemq = "1.3.5"
+serialization = "1.8.1"
 
 [libraries]
-alchemist = { module = "it.unibo.alchemist:alchemist", version.ref = "alchemist" }
-alchemist-swingui = { module = "it.unibo.alchemist:alchemist-swingui", version.ref = "alchemist" }
-alchemist-ui-tooling = { module = "it.unibo.alchemist:alchemist-ui-tooling", version.ref = "alchemist" }
-alchemist-euclidean-geometry = { module = "it.unibo.alchemist:alchemist-euclidean-geometry", version.ref = "alchemist" }
 collektive = { module = "it.unibo.collektive:collektive-dsl", version.ref = "collektive" }
-collektive-incarnation = { module = "it.unibo.collektive:alchemist-incarnation-collektive", version.ref = "collektive" }
 collektive-stdlib = { module = "it.unibo.collektive:collektive-stdlib", version.ref = "collektive" }
+hivemq = { module = "com.hivemq:hivemq-mqtt-client", version.ref = "hivemq" }
+hivemq-reactor = { module = "com.hivemq:hivemq-mqtt-client-reactor", version.ref = "hivemq" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version.ref = "kotlin-logging" }
+kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
+kotlinx-coroutines-rx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.10.2"
+kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.6.2"
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
+mktt = { module = "it.nicolasfarabegoli:mktt", version = "1.2.3" }
+slf4j = "org.slf4j:slf4j-api:2.0.17"
 
 [bundles]
-alchemist = [
-    "alchemist",
-    "alchemist-euclidean-geometry",
-    "alchemist-swingui",
-    "alchemist-ui-tooling"
-]
-collektive = ["collektive", "collektive-incarnation", "collektive-stdlib"]
+collektive = ["collektive", "collektive-stdlib"]
+coroutines = ["kotlinx-coroutines", "kotlinx-coroutines-rx2"]
+hivemq = ["hivemq", "hivemq-reactor"]
 
 [plugins]
 collektive = { id = "it.unibo.collektive.collektive-plugin", version.ref = "collektive" }
+multiJvmTesting = "org.danilopianini.multi-jvm-test-plugin:3.4.1"
 gitSemVer = { id = "org.danilopianini.git-sensitive-semantic-versioning", version = "5.1.2" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-qa = { id = "org.danilopianini.gradle-kotlin-qa", version = "0.86.1" }
-multiJvmTesting = { id = "org.danilopianini.multi-jvm-test-plugin", version = "3.4.1" }
-taskTree = { id = "com.dorongold.task-tree", version = "4.0.1" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.86.1"
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+taskTree = "com.dorongold.task-tree:4.0.1"
