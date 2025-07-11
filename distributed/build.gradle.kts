@@ -39,7 +39,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.protobuf)
         }
         jvmMain.dependencies {
-            implementation(project.dependencies.platform("org.apache.logging.log4j:log4j-bom:2.25.0"))
+            implementation(project.dependencies.platform("org.apache.logging.log4j:log4j-bom:2.25.1"))
             runtimeOnly("org.apache.logging.log4j:log4j-core")
             runtimeOnly("org.apache.logging.log4j:log4j-slf4j2-impl")
             implementation(libs.bundles.hivemq)
