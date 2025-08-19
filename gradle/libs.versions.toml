@@ -1,5 +1,5 @@
 [versions]
-collektive = "25.0.2"
+collektive = "26.1.2"
 kotlin = "2.1.21"
 kotlin-logging = "7.0.13"
 hivemq = "1.3.8"
