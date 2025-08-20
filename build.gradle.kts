@@ -30,13 +30,11 @@ allprojects {
         apply(plugin = kotlin.qa.id)
     }
     plugins.withType<DetektPlugin> {
-        val detektTasks =
-            tasks
-                .withType<Detekt>()
-                .matching { task ->
-                    task.name.let { it.endsWith("Main") || it.endsWith("Test") } &&
-                        !task.name.contains("Baseline")
-                }
+        val detektTasks = tasks.withType<Detekt>()
+            .matching { task ->
+                task.name.let { it.endsWith("Main") || it.endsWith("Test") } &&
+                    !task.name.contains("Baseline")
+            }
         val check by tasks.getting
         val detektAll by tasks.registering {
             group = "verification"
@@ -49,11 +47,7 @@ allprojects {
     configurations.matching { it.name != "detekt" }.all {
         resolutionStrategy.eachDependency {
             if (requested.group == "org.jetbrains.kotlin") {
-                useVersion(
-                    rootProject.libs.versions.kotlin
-                        .asProvider()
-                        .get(),
-                )
+                useVersion(rootProject.libs.versions.kotlin.asProvider().get())
             }
         }
     }

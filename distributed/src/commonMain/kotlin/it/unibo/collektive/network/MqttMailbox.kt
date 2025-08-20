@@ -5,6 +5,9 @@ import it.nicolasfarabegoli.mktt.MkttClient
 import it.nicolasfarabegoli.mktt.MqttQoS
 import it.unibo.collektive.networking.Message
 import it.unibo.collektive.networking.SerializedMessage
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,9 +18,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialFormat
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 /**
  * TODO add documentation.
@@ -62,22 +62,21 @@ class MqttMailbox private constructor(
         logger.info { "Complete MQTT initialization for device $deviceId" }
     }
 
-    private suspend fun registerReceiverListener(): Unit =
-        coroutineScope {
-            initializeMqttClient()
-            // Listen for incoming messages
-            internalScope.launch(dispatcher) {
-                client.subscribe("drone/$deviceId/neighbors").collect {
-                    try {
-                        val deserialized = serializer.decode(it.payload)
-                        logger.debug { "Received new message from ${deserialized.senderId} to $deviceId" }
-                        deliverableReceived(deserialized)
-                    } catch (exception: SerializationException) {
-                        logger.error { "Error decoding message from ${it.topic}: ${exception.message}" }
-                    }
+    private suspend fun registerReceiverListener(): Unit = coroutineScope {
+        initializeMqttClient()
+        // Listen for incoming messages
+        internalScope.launch(dispatcher) {
+            client.subscribe("drone/$deviceId/neighbors").collect {
+                try {
+                    val deserialized = serializer.decode(it.payload)
+                    logger.debug { "Received new message from ${deserialized.senderId} to $deviceId" }
+                    deliverableReceived(deserialized)
+                } catch (exception: SerializationException) {
+                    logger.error { "Error decoding message from ${it.topic}: ${exception.message}" }
                 }
             }
         }
+    }
 
     override suspend fun close() {
         internalScope.cancel()
@@ -85,10 +84,7 @@ class MqttMailbox private constructor(
         logger.info { "$deviceId disconnected from HiveMQ" }
     }
 
-    override fun onDeliverableReceived(
-        receiverId: Int,
-        message: Message<Int, Any?>,
-    ) {
+    override fun onDeliverableReceived(receiverId: Int, message: Message<Int, Any?>) {
         internalScope.launch {
             logger.debug { "From device ${message.senderId} to $receiverId: $message" }
             val payload = serializer.encode(message as SerializedMessage<Int>)
@@ -114,11 +110,10 @@ class MqttMailbox private constructor(
             serializer: SerialFormat = Json,
             retentionTime: Duration = 5.seconds,
             dispatcher: CoroutineDispatcher = Dispatchers.Default,
-        ): MqttMailbox =
-            coroutineScope {
-                MqttMailbox(deviceId, host, port, serializer, retentionTime, dispatcher).apply {
-                    registerReceiverListener()
-                }
+        ): MqttMailbox = coroutineScope {
+            MqttMailbox(deviceId, host, port, serializer, retentionTime, dispatcher).apply {
+                registerReceiverListener()
             }
+        }
     }
 }

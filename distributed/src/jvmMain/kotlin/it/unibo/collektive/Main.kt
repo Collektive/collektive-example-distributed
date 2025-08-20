@@ -7,11 +7,10 @@ import kotlinx.coroutines.runBlocking
  * TODO add documentation.
  */
 @Suppress("InjectDispatcher")
-fun main() =
-    runBlocking {
-        mainEntrypoint(
-            startDeviceId = 0,
-            deviceCount = 3,
-            dispatcher = Dispatchers.IO,
-        )
-    }
+fun main() = runBlocking {
+    mainEntrypoint(
+        startDeviceId = 0,
+        deviceCount = 3,
+        dispatcher = Dispatchers.IO,
+    )
+}

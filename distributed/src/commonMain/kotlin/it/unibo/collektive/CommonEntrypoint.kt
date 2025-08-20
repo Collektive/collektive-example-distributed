@@ -4,13 +4,13 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import it.unibo.collektive.aggregate.api.neighboring
 import it.unibo.collektive.network.MqttMailbox
 import it.unibo.collektive.networking.Mailbox
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 private const val DEFAULT_DEVICE_COUNT = 50
 private val DEFAULT_ROUND_TIME = 1.seconds
@@ -19,13 +19,9 @@ private val DEFAULT_EXECUTE_FOR = 60.seconds
 /**
  * TODO add documentation.
  */
-fun aggregateProgram(
-    id: Int,
-    network: Mailbox<Int>,
-): Collektive<Int, Collection<Int>> =
-    Collektive(id, network) {
-        neighboring(id).neighbors
-    }
+fun aggregateProgram(id: Int, network: Mailbox<Int>): Collektive<Int, Collection<Int>> = Collektive(id, network) {
+    neighboring(id).neighbors
+}
 
 /**
  * TODO add documentation.

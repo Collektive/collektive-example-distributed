@@ -9,6 +9,10 @@ import it.unibo.collektive.networking.OutboundEnvelope
 import it.unibo.collektive.networking.SerializedMessage
 import it.unibo.collektive.networking.SerializedMessageFactory
 import it.unibo.collektive.path.Path
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.BinaryFormat
@@ -19,10 +23,6 @@ import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.encodeToString
-import kotlin.time.Clock
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 /**
  * TODO add documentation.
@@ -34,10 +34,7 @@ abstract class AbstractSerializableMailbox<ID : Any>(
     private val retentionTime: Duration,
 ) : Mailbox<ID> {
     @ExperimentalTime
-    protected data class TimedMessage<ID : Any>(
-        val message: Message<ID, Any?>,
-        val timestamp: Instant,
-    )
+    protected data class TimedMessage<ID : Any>(val message: Message<ID, Any?>, val timestamp: Instant)
 
     protected var messages = mutableMapOf<ID, TimedMessage<ID>>()
     private val factory = object : SerializedMessageFactory<ID, Any?>(serializer) {}
@@ -53,10 +50,7 @@ abstract class AbstractSerializableMailbox<ID : Any>(
     /**
      * This method is called when a message is ready to be sent to the network.
      */
-    abstract fun onDeliverableReceived(
-        receiverId: ID,
-        message: Message<ID, Any?>,
-    )
+    abstract fun onDeliverableReceived(receiverId: ID, message: Message<ID, Any?>)
 
     /**
      * Add the [deviceId] to the list of neighbors.
@@ -93,40 +87,34 @@ abstract class AbstractSerializableMailbox<ID : Any>(
         neighborMessageFlow.tryEmit(message)
     }
 
-    final override fun currentInbound(): NeighborsData<ID> =
-        object : NeighborsData<ID> {
-            // First, remove all messages that are older than the retention time
-            init {
-                val nowInstant = Clock.System.now()
-                val candidates =
-                    messages
-                        .values
-                        .filter { it.timestamp < nowInstant - retentionTime }
-                messages.values.removeAll(candidates.toSet())
-            }
-
-            override val neighbors: Set<ID> get() = messages.keys
-
-            override fun <Value> dataAt(
-                path: Path,
-                dataSharingMethod: DataSharingMethod<Value>,
-            ): Map<ID, Value> {
-                require(dataSharingMethod is Serialize<Value>) {
-                    "Serialization has been required for in-memory messages. This is likely a misconfiguration."
-                }
-                return messages
-                    .mapValues { (_, timedMessage) ->
-                        require(timedMessage.message.sharedData.all { it.value is ByteArray }) {
-                            "Message ${timedMessage.message.senderId} is not serialized"
-                        }
-                        timedMessage.message.sharedData.getOrElse(path) { NoValue }
-                    }.filterValues { it != NoValue }
-                    .mapValues { (_, payload) ->
-                        val byteArrayPayload = payload as ByteArray
-                        serializer.decode(dataSharingMethod.serializer, byteArrayPayload)
-                    }
-            }
+    final override fun currentInbound(): NeighborsData<ID> = object : NeighborsData<ID> {
+        // First, remove all messages that are older than the retention time
+        init {
+            val nowInstant = Clock.System.now()
+            val candidates = messages.values.filter { it.timestamp < nowInstant - retentionTime }
+            messages.values.removeAll(candidates.toSet())
         }
+
+        override val neighbors: Set<ID> get() = messages.keys
+
+        override fun <Value> dataAt(path: Path, dataSharingMethod: DataSharingMethod<Value>): Map<ID, Value> {
+            require(dataSharingMethod is Serialize<Value>) {
+                "Serialization has been required for in-memory messages. This is likely a misconfiguration."
+            }
+            return messages
+                .mapValues { (_, timedMessage) ->
+                    require(timedMessage.message.sharedData.all { it.value is ByteArray }) {
+                        "Message ${timedMessage.message.senderId} is not serialized"
+                    }
+                    timedMessage.message.sharedData.getOrElse(path) { NoValue }
+                }
+                .filterValues { it != NoValue }
+                .mapValues { (_, payload) ->
+                    val byteArrayPayload = payload as ByteArray
+                    serializer.decode(dataSharingMethod.serializer, byteArrayPayload)
+                }
+        }
+    }
 
     private object NoValue
 
@@ -137,30 +125,25 @@ abstract class AbstractSerializableMailbox<ID : Any>(
         /**
          * Encodes the [value] into a [ByteArray] according to the [SerialFormat].
          */
-        fun SerialFormat.encode(value: SerializedMessage<Int>): ByteArray =
-            when (this) {
-                is StringFormat -> encodeToString(value).encodeToByteArray()
-                is BinaryFormat -> encodeToByteArray(value)
-                else -> error("Unsupported serializer")
-            }
+        fun SerialFormat.encode(value: SerializedMessage<Int>): ByteArray = when (this) {
+            is StringFormat -> encodeToString(value).encodeToByteArray()
+            is BinaryFormat -> encodeToByteArray(value)
+            else -> error("Unsupported serializer")
+        }
 
         /**
          * Decodes the [value] from a [ByteArray] according to the [SerialFormat].
          */
-        fun SerialFormat.decode(value: ByteArray): SerializedMessage<Int> =
-            when (this) {
-                is StringFormat -> decodeFromString(value.decodeToString())
-                is BinaryFormat -> decodeFromByteArray(value)
-                else -> error("Unsupported serializer")
-            }
+        fun SerialFormat.decode(value: ByteArray): SerializedMessage<Int> = when (this) {
+            is StringFormat -> decodeFromString(value.decodeToString())
+            is BinaryFormat -> decodeFromByteArray(value)
+            else -> error("Unsupported serializer")
+        }
 
         /**
          * Decodes the [value] from a [ByteArray] using the [kSerializer] according to the [SerialFormat].
          */
-        private fun <Value> SerialFormat.decode(
-            kSerializer: KSerializer<Value>,
-            value: ByteArray,
-        ): Value =
+        private fun <Value> SerialFormat.decode(kSerializer: KSerializer<Value>, value: ByteArray): Value =
             when (this) {
                 is StringFormat -> decodeFromString(kSerializer, value.decodeToString())
                 is BinaryFormat -> decodeFromByteArray(kSerializer, value)
