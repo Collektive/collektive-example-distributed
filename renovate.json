@@ -3,5 +3,6 @@
    "extends": [
       "github>Collektive/renovate-config:kotlin"
    ],
+   "assignees": ["angelacorte", "nicolasfara", "DanySK"],
    "includeForks": true
 }
