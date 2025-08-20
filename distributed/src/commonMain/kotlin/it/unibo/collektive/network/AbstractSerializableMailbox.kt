@@ -11,8 +11,6 @@ import it.unibo.collektive.networking.SerializedMessageFactory
 import it.unibo.collektive.path.Path
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.datetime.Clock.System
-import kotlinx.datetime.Instant
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialFormat
@@ -21,16 +19,21 @@ import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.encodeToString
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * TODO add documentation.
  */
+@ExperimentalTime
 abstract class AbstractSerializableMailbox<ID : Any>(
     private val deviceId: ID,
     private val serializer: SerialFormat,
     private val retentionTime: Duration,
 ) : Mailbox<ID> {
+    @ExperimentalTime
     protected data class TimedMessage<ID : Any>(
         val message: Message<ID, Any?>,
         val timestamp: Instant,
@@ -86,7 +89,7 @@ abstract class AbstractSerializableMailbox<ID : Any>(
     }
 
     final override fun deliverableReceived(message: Message<ID, *>) {
-        messages[message.senderId] = TimedMessage(message, System.now())
+        messages[message.senderId] = TimedMessage(message, Clock.System.now())
         neighborMessageFlow.tryEmit(message)
     }
 
@@ -94,7 +97,7 @@ abstract class AbstractSerializableMailbox<ID : Any>(
         object : NeighborsData<ID> {
             // First, remove all messages that are older than the retention time
             init {
-                val nowInstant = System.now()
+                val nowInstant = Clock.System.now()
                 val candidates =
                     messages
                         .values

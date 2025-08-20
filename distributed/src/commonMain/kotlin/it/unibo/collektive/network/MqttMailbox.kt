@@ -17,10 +17,12 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 /**
  * TODO add documentation.
  */
+@OptIn(ExperimentalTime::class)
 class MqttMailbox private constructor(
     private val deviceId: Int,
     host: String,

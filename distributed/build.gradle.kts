@@ -33,7 +33,6 @@ kotlin {
             implementation(libs.collektive.stdlib)
             implementation(libs.kotlin.logging)
             implementation(libs.kotlinx.coroutines)
-            implementation(libs.kotlinx.datetime)
             implementation(libs.mktt)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.serialization.protobuf)
