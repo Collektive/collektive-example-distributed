@@ -14,14 +14,12 @@ This project showcases how to build distributed aggregate computing applications
 - **MQTT Communication**: Devices communicate using the MQTT protocol via a public broker
 - **Aggregate Programming**: Implements the `neighboring` operation to collect information from connected devices
 - **Configurable Network**: Customize the number of devices, round time, and execution duration
-- **Docker Support**: Includes Docker Compose configuration for containerized deployments
 
 ## Requirements
 
 - **JDK**: Version 8 or higher
 - **Gradle**: Wrapper included (no installation required)
 - **Node.js**: Version 22.19 (for JavaScript target)
-- **Docker**: Optional, for containerized execution
 
 ## Installation
 
@@ -98,26 +96,6 @@ Auto-fix linting issues:
 ./gradlew ktlintFormat
 ```
 
-## Docker Compose
-
-The project includes a Docker Compose configuration for running simulations and generating charts. The workflow consists of:
-
-1. **prepare**: Sets up directories with proper permissions
-2. **simulation**: Runs the distributed simulation
-3. **charts**: Generates visualization charts from simulation data
-4. **finish**: Adjusts file permissions for output
-
-Build and run with Docker Compose:
-
-```bash
-docker compose build
-docker compose up
-```
-
-Results will be available in:
-- `./data`: Simulation output data
-- `./charts`: Generated visualizations
-
 ## Project Structure
 
 ```
@@ -139,7 +117,6 @@ collektive-example-distributed/
 │                   └── Main.kt                  # JavaScript entry point
 ├── buildSrc/                      # Build configuration
 ├── gradle/                        # Gradle wrapper and version catalog
-├── docker-compose.yml            # Docker Compose configuration
 ├── release.config.js             # Semantic release configuration
 └── README.md                     # This file
 ```
@@ -154,7 +131,6 @@ collektive-example-distributed/
 - **Kotlinx Serialization**: Data serialization (JSON and Protobuf)
 - **Kotlinx Coroutines**: Asynchronous programming
 - **Kotlin Logging**: Structured logging
-- **Docker**: Containerization platform
 
 ## How It Works
 
