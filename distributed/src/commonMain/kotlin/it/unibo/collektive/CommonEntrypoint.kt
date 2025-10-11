@@ -1,7 +1,9 @@
 package it.unibo.collektive
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import it.unibo.collektive.aggregate.api.neighborhood
 import it.unibo.collektive.aggregate.api.neighboring
+import it.unibo.collektive.aggregate.ids
 import it.unibo.collektive.network.MqttMailbox
 import it.unibo.collektive.networking.Mailbox
 import kotlin.time.Duration
@@ -20,7 +22,7 @@ private val DEFAULT_EXECUTE_FOR = 60.seconds
  * TODO add documentation.
  */
 fun aggregateProgram(id: Int, network: Mailbox<Int>): Collektive<Int, Collection<Int>> = Collektive(id, network) {
-    neighboring(id).neighbors
+    neighborhood().neighbors.ids.set
 }
 
 /**
