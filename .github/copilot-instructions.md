@@ -59,7 +59,7 @@ Run quality checks:
 
 - Follow Kotlin coding conventions
 - Use meaningful variable names
-- Add KDoc comments for public APIs (note: some TODOs exist for missing documentation)
+- Add KDoc comments for public APIs
 - Use functional programming patterns where appropriate
 
 ### Multiplatform Considerations
@@ -96,14 +96,10 @@ The project uses Conventional Commits:
 ### Release Process
 
 - Automated via semantic-release
-- Versions are managed in `gradle.properties` and `.env`
-- Docker images are built and pushed during release
-- Use `[skip ci]` in commit messages to skip CI builds
 
 ### Common Tasks
 
-- **Add a dependency**: Update `distributed/build.gradle.kts` in the appropriate source set
-- **Update Collektive version**: Modify version catalogs in `gradle/libs.versions.toml`
+- **Update a version or add a dependency**: Modify version catalogs in `gradle/libs.versions.toml`, then if needed update `distributed/build.gradle.kts` in the appropriate source set
 - **Run a device**: Use `./gradlew :distributed:jvmRun` with appropriate main class configuration
 
 ## Important Notes
