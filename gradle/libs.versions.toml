@@ -27,7 +27,7 @@ hivemq = ["hivemq", "hivemq-reactor"]
 [plugins]
 collektive = { id = "it.unibo.collektive.collektive-plugin", version.ref = "collektive" }
 multiJvmTesting = "org.danilopianini.multi-jvm-test-plugin:4.3.2"
-gitSemVer = { id = "org.danilopianini.git-sensitive-semantic-versioning", version = "7.0.5" }
+gitSemVer = { id = "org.danilopianini.git-sensitive-semantic-versioning", version = "7.0.6" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-qa = "org.danilopianini.gradle-kotlin-qa:0.95.3"
