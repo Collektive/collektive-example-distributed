@@ -25,7 +25,16 @@ import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.encodeToString
 
 /**
- * TODO add documentation.
+ * Abstract base class for network-based mailboxes that handle serialization of messages.
+ *
+ * This class provides a common implementation for mailboxes that communicate over a network,
+ * handling message serialization/deserialization, neighbor management, and message retention.
+ * Concrete implementations must provide network-specific communication logic.
+ *
+ * @param ID The type of device identifiers used in the network.
+ * @param deviceId The unique identifier of this device.
+ * @param serializer The serialization format to use for encoding/decoding messages.
+ * @param retentionTime The duration for which received messages are retained before being discarded.
  */
 @ExperimentalTime
 abstract class AbstractSerializableMailbox<ID : Any>(
