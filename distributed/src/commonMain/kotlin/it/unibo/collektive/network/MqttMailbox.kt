@@ -20,7 +20,23 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 /**
- * TODO add documentation.
+ * MQTT-based mailbox implementation for distributed device communication.
+ *
+ * This mailbox uses MQTT protocol to enable devices to discover neighbors and exchange
+ * aggregate computation messages. Each device publishes its presence on a topic and subscribes
+ * to topics for receiving messages from other devices.
+ *
+ * The mailbox manages:
+ * - Device neighbor discovery through MQTT topic subscription
+ * - Message publishing and receiving via MQTT
+ * - Connection lifecycle to the MQTT broker
+ *
+ * @param deviceId The unique identifier of this device.
+ * @param host The MQTT broker hostname or IP address.
+ * @param port The MQTT broker port. Default is 1883 (standard MQTT port).
+ * @param serializer The serialization format for encoding/decoding messages. Default is JSON.
+ * @param retentionTime How long to retain received messages. Default is 5 seconds.
+ * @param dispatcher The coroutine dispatcher for executing network operations. Default is Dispatchers.Default.
  */
 @OptIn(ExperimentalTime::class)
 class MqttMailbox private constructor(
@@ -97,11 +113,22 @@ class MqttMailbox private constructor(
     }
 
     /**
-     * TODO add documentation.
+     * Companion object providing factory methods for creating MqttMailbox instances.
      */
     companion object {
         /**
-         * TODO add documentation.
+         * Creates and initializes a new MqttMailbox instance.
+         *
+         * This factory method constructs an MqttMailbox, establishes the MQTT connection,
+         * and sets up all necessary subscriptions for neighbor discovery and message receiving.
+         *
+         * @param deviceId The unique identifier of this device.
+         * @param host The MQTT broker hostname or IP address.
+         * @param port The MQTT broker port. Default is 1883.
+         * @param serializer The serialization format for messages. Default is JSON.
+         * @param retentionTime How long to retain received messages. Default is 5 seconds.
+         * @param dispatcher The coroutine dispatcher for network operations. Default is Dispatchers.Default.
+         * @return A fully initialized MqttMailbox ready for communication.
          */
         suspend operator fun invoke(
             deviceId: Int,
