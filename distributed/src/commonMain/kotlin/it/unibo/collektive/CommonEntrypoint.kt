@@ -54,6 +54,7 @@ suspend fun mainEntrypoint(
                             val result = program.cycle()
                             logger.info { "For device $id: $result" }
                         }
+
                     false -> {
                         while (true) {
                             val result = program.cycle()
