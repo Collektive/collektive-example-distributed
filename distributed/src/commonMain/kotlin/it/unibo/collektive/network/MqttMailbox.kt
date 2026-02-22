@@ -47,7 +47,7 @@ class MqttMailbox private constructor(
     retentionTime: Duration = 5.seconds,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : AbstractSerializableMailbox<Int>(deviceId, serializer, retentionTime) {
-    private val logger = KotlinLogging.logger("${MqttMailbox::class.simpleName!!}@$deviceId")
+    private val logger = KotlinLogging.logger("${MqttMailbox::class.simpleName ?: "AnonMailbox"}@$deviceId")
     private val internalScope: CoroutineScope = CoroutineScope(dispatcher)
     private val client =
         MkttClient(dispatcher) {
