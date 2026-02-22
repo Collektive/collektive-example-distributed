@@ -36,8 +36,8 @@ abstract class AbstractSerializableMailbox<ID : Any>(
     @ExperimentalTime
     protected data class TimedMessage<ID : Any>(val message: Message<ID, Any?>, val timestamp: Instant)
 
-    protected var messages = mutableMapOf<ID, TimedMessage<ID>>()
-    private val factory = object : SerializedMessageFactory<ID, Any?>(serializer) {}
+    protected val messages = mutableMapOf<ID, TimedMessage<ID>>()
+    private val factory = SerializedMessageFactory<ID, Any?>(serializer)
     private val neighborMessageFlow = MutableSharedFlow<Message<ID, Any?>>()
     private val neighbors = mutableSetOf<ID>()
 
