@@ -17,7 +17,7 @@ kotlinx-coroutines-rx2 = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.10.2"
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
 mktt = { module = "it.nicolasfarabegoli:mktt", version = "1.2.3" }
-slf4j = "org.slf4j:slf4j-api:2.0.17"
+slf4j = "org.slf4j:slf4j-api:2.0.18"
 
 [bundles]
 collektive = ["collektive", "collektive-stdlib"]
